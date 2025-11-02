@@ -4,3 +4,8 @@ node_modules/
 *.log
 .vscode/
 .idea/
+
+# Local testing and development
+.claude/
+discover-project-skills-implementation-guide.md
+docs/plans/
