@@ -121,7 +121,7 @@
 
 **Simple Project (tradingview-mcp-server):**
 - [ ] Clone repository
-- [ ] Run /discover-skills
+- [ ] Run /cc-meta-skills:discover-project-skills
 - [ ] Verify tech detection
 - [ ] Check generated skills
 - [ ] Validate token budget
@@ -129,7 +129,7 @@
 
 **Complex Project (gradle):**
 - [ ] Clone repository
-- [ ] Run /discover-skills
+- [ ] Run /cc-meta-skills:discover-project-skills
 - [ ] Verify agents are used
 - [ ] Check multi-module detection
 - [ ] Validate skill chains

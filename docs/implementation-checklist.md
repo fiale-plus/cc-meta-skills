@@ -85,7 +85,7 @@ Use this checklist to verify implementation completeness.
 - [ ] Phase 4 errors covered
 - [ ] General error strategy
 
-## Slash Command (`commands/discover-skills.md`)
+## Slash Command (`commands/discover-project-skills.md`)
 
 - [ ] File created
 - [ ] Contains exact invocation command

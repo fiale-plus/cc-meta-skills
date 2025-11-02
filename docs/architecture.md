@@ -17,7 +17,7 @@ Discover Project Skills is a five-phase analysis and generation system that tran
 - After Generation: Cleanup and summary
 - Key Principles: Design guidelines
 
-### 2. Slash Command (`commands/discover-skills.md`)
+### 2. Slash Command (`commands/discover-project-skills.md`)
 
 **Purpose**: User-facing entry point that invokes the skill.
 
@@ -36,7 +36,7 @@ Discover Project Skills is a five-phase analysis and generation system that tran
 ## Data Flow
 
 ```
-User runs /discover-skills
+User runs /cc-meta-skills:discover-project-skills
     ↓
 Phase 0: Check existing skills
     ↓
