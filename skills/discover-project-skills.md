@@ -140,3 +140,37 @@ API Protocols: REST, gRPC
 - No package files found → Ask user to point to key files manually
 - File read errors → Skip that file, continue with others
 - No technologies detected → Present findings anyway, ask user for hints
+
+## Phase 2: Focus Selection
+
+**Goal**: Let user choose which areas to analyze deeply.
+
+**Present findings from Phase 1 grouped by category:**
+```markdown
+I found the following technologies and patterns:
+
+**API Layer**: REST endpoints in /controllers
+**Service Layer**: Business logic in /services
+**Database**: PostgreSQL access via /repositories
+**Messaging**: Kafka producers/consumers in /events
+
+Which areas should I analyze deeper?
+```
+
+**Use AskUserQuestion tool with options:**
+- API Layer Patterns
+- Service Layer Patterns
+- Database Access Patterns
+- Messaging Patterns
+- Module Architecture
+- All (medium depth across all)
+- Other (let user specify)
+
+**Adaptive depth strategy:**
+- 1-2 areas selected → Deep dive with file examples and pattern extraction
+- "All" selected → Medium depth across all areas
+- Track selected areas to avoid duplicate work in Phase 3
+
+**Error handling:**
+- User selects invalid option → Re-prompt with valid options
+- No areas selected → Ask if they want to cancel
