@@ -1,0 +1,13 @@
+{
+  "name": "discover-project-skills",
+  "description": "Analyzes codebases to detect technologies, extract project-specific patterns, and generate reusable contextual skills with automatic chaining",
+  "version": "1.0.0",
+  "author": {
+    "name": "Fiale Plus",
+    "email": "pavel.fadeev@gmail.com"
+  },
+  "homepage": "https://github.com/fiale-plus/cc-meta-skills",
+  "repository": "https://github.com/fiale-plus/cc-meta-skills",
+  "license": "MIT",
+  "keywords": ["skills", "codebase-analysis", "pattern-detection", "skill-generation", "technology-detection", "meta-skill"]
+}
