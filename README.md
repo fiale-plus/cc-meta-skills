@@ -21,6 +21,23 @@ Then run in any project:
 /cc-meta-skills:discover-project-skills
 ```
 
+### Recommended: Use with Superpowers
+
+For best results, use cc-meta-skills together with the [Superpowers plugin](https://github.com/superpowers-marketplace/superpowers):
+
+```bash
+# Install superpowers for workflow structure
+claude plugin marketplace add superpowers-marketplace
+claude plugin install superpowers
+```
+
+**Why use both?**
+- **Superpowers**: Provides structured workflows (TDD, systematic debugging, code review, verification)
+- **cc-meta-skills**: Discovers your project-specific patterns and technologies
+- **Together**: Superpowers maintains discipline and structure, while cc-meta-skills provides contextual knowledge
+
+This combination ensures Claude follows best practices while understanding your codebase's unique architecture.
+
 ## What It Does
 
 This skill analyzes your codebase and generates:
