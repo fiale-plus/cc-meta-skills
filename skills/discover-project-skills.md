@@ -49,3 +49,94 @@ This skill analyzes your codebase to automatically discover:
 **Error handling:**
 - Cannot create directory → Suggest alternative location or check permissions
 - Cannot read existing skills → Warn user, offer to continue without checking
+
+## Phase 1: Quick Technology Scan
+
+**Goal**: Quickly identify major technologies without deep analysis.
+
+### Hybrid Scanning Strategy
+
+**Estimate project size first:**
+```bash
+find . -type f \( -name "*.ts" -o -name "*.js" -o -name "*.java" -o -name "*.kt" -o -name "*.py" -o -name "*.go" \) | wc -l
+```
+
+**Choose scanning method:**
+- **< 50 files**: Use Read/Glob/Grep tools directly
+- **>= 50 files**: Use Task tool with Explore subagent
+
+### Package Files to Scan
+
+**Node.js:**
+- Read `package.json` if exists
+- Check dependencies for:
+  - TypeScript: `typescript` in devDependencies or `tsconfig.json` exists
+  - Express: `express` in dependencies
+  - NestJS: `@nestjs/core` in dependencies
+  - MongoDB: `mongodb`, `mongoose` in dependencies
+  - PostgreSQL: `pg`, `typeorm`, `prisma` in dependencies
+  - gRPC: `@grpc/grpc-js`, `@grpc/proto-loader` in dependencies
+  - GraphQL: `graphql`, `apollo-server`, `@nestjs/graphql` in dependencies
+
+**Java/Kotlin:**
+- Read `pom.xml`, `build.gradle`, or `build.gradle.kts` if exists
+- Check for:
+  - Kotlin: `build.gradle.kts` file or `kotlin-stdlib` dependency
+  - Ktor: `io.ktor:ktor-server-*` dependencies
+  - Spring Boot: `spring-boot-starter-*` dependencies
+  - Kafka: `kafka-clients`, `spring-kafka` dependencies
+  - PostgreSQL: `postgresql` JDBC driver
+  - MongoDB: `mongodb-driver`, `spring-data-mongodb`
+  - gRPC: `grpc-*`, `protobuf-java` dependencies
+  - GraphQL: `graphql-java`, `spring-boot-starter-graphql`
+
+**Python:**
+- Read `requirements.txt` or `pyproject.toml` if exists
+- Check for:
+  - FastAPI: `fastapi`
+  - PostgreSQL: `psycopg2`, `asyncpg`
+  - MongoDB: `pymongo`, `motor`
+  - GraphQL: `graphene`, `strawberry-graphql`, `ariadne`
+
+**Go:**
+- Read `go.mod` if exists
+- Check for:
+  - gRPC: `google.golang.org/grpc`
+  - Kafka: `github.com/segmentio/kafka-go`, `github.com/Shopify/sarama`
+  - PostgreSQL: `github.com/lib/pq`, `gorm.io/driver/postgres`
+  - MongoDB: `go.mongodb.org/mongo-driver`
+
+### REST API Detection
+
+Look for HTTP method annotations/decorators in code:
+- **Node**: `app.get()`, `app.post()`, `@Get()`, `@Post()` decorators
+- **Java/Kotlin**: `@RestController`, `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`
+- **Python**: `@app.get`, `@app.post`, `@route` decorators
+
+### Directory Structure Scan
+
+Scan top 2 directory levels for these patterns:
+- `/api`, `/controllers`, `/handlers`, `/routes` → API layer
+- `/service`, `/domain`, `/business` → Service layer
+- `/repository`, `/dao`, `/data` → Database access layer
+- `/messaging`, `/events`, `/kafka` → Messaging patterns
+- `/grpc`, `/proto` → gRPC usage
+- `/graphql`, `/schema` → GraphQL usage
+
+### Present Findings
+
+Group discoveries by category:
+```markdown
+**Detected Technologies:**
+
+Languages: TypeScript, Java
+Frameworks: Express, Spring Boot
+Databases: PostgreSQL, MongoDB
+Messaging: Kafka
+API Protocols: REST, gRPC
+```
+
+**Error handling:**
+- No package files found → Ask user to point to key files manually
+- File read errors → Skip that file, continue with others
+- No technologies detected → Present findings anyway, ask user for hints
