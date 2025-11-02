@@ -9,13 +9,11 @@ A Claude Code skill that analyzes codebases to automatically discover technologi
 ## 🚀 Quick Start
 
 ```bash
-# Install via Claude Code CLI
-claude plugin add https://github.com/fiale-plus/cc-meta-skills
+# Add the marketplace
+claude plugin marketplace add fiale-plus/cc-meta-skills
 
-# Or add to your .claude/config.yaml
-plugins:
-  - name: cc-meta-skills
-    import_path: https://github.com/fiale-plus/cc-meta-skills
+# Install the plugin
+claude plugin install cc-meta-skills
 ```
 
 Then run in any project:
