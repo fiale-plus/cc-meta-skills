@@ -1,0 +1,20 @@
+{
+  "name": "fiale-plus-skills",
+  "description": "Fiale Plus skills collection for Claude Code",
+  "owner": {
+    "name": "Fiale Plus",
+    "email": "pavel.fadeev@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "discover-project-skills",
+      "description": "Analyzes codebases to detect technologies, extract project-specific patterns, and generate reusable contextual skills with automatic chaining",
+      "version": "1.0.0",
+      "source": "./",
+      "author": {
+        "name": "Fiale Plus",
+        "email": "pavel.fadeev@gmail.com"
+      }
+    }
+  ]
+}
