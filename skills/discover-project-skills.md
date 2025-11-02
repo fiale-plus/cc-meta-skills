@@ -480,7 +480,7 @@ description: PostgreSQL database access patterns. Use when working with database
 
 3. **Remind about maintenance:**
    ```markdown
-   💡 Re-run /discover-skills when:
+   💡 Re-run /cc-meta-skills:discover-project-skills when:
    - Major architectural changes are made
    - New technologies are adopted
    - Patterns evolve significantly

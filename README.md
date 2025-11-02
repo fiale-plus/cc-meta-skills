@@ -20,7 +20,7 @@ plugins:
 
 Then run in any project:
 ```bash
-/cc-meta-skills:discover-skills
+/cc-meta-skills:discover-project-skills
 ```
 
 ## What It Does
@@ -53,7 +53,7 @@ Each skill includes:
 ### Basic Usage
 
 ```bash
-/cc-meta-skills:discover-skills
+/cc-meta-skills:discover-project-skills
 ```
 
 The skill will:
@@ -140,7 +140,7 @@ When you work on database code, Claude matches:
 ### Example 1: Simple Node.js API
 
 ```bash
-/discover-skills
+/cc-meta-skills:discover-project-skills
 ```
 
 **Detects:**
@@ -159,7 +159,7 @@ When you work on database code, Claude matches:
 ### Example 2: Event-Driven Microservice
 
 ```bash
-/discover-skills
+/cc-meta-skills:discover-project-skills
 ```
 
 **Detects:**
@@ -187,7 +187,7 @@ When you work on database code, Claude matches:
 When your codebase evolves:
 
 ```bash
-/discover-skills
+/cc-meta-skills:discover-project-skills
 ```
 
 The skill detects existing generated skills and offers options:
