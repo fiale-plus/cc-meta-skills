@@ -1,6 +1,27 @@
 # Discover Project Skills
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/fiale-plus/cc-meta-skills/releases)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-purple.svg)](https://claude.ai/code)
+
 A Claude Code skill that analyzes codebases to automatically discover technologies, extract project-specific patterns, and generate contextual skills with intelligent chaining.
+
+## 🚀 Quick Start
+
+```bash
+# Install via Claude Code CLI
+claude plugin add https://github.com/fiale-plus/cc-meta-skills
+
+# Or add to your .claude/config.yaml
+plugins:
+  - name: discover-project-skills
+    import_path: https://github.com/fiale-plus/cc-meta-skills
+```
+
+Then run in any project:
+```bash
+/discover-skills
+```
 
 ## What It Does
 
@@ -27,9 +48,15 @@ Each skill includes:
 - Related skills for workflow chaining
 - Concrete examples from your code
 
-## Installation
+## 📦 Installation Options
 
-### Option 1: Direct Import (Recommended)
+### Option 1: Claude Code CLI (Recommended)
+
+```bash
+claude plugin add https://github.com/fiale-plus/cc-meta-skills
+```
+
+### Option 2: Config File
 
 Add to your `.claude/config.yaml`:
 
@@ -39,11 +66,13 @@ plugins:
     import_path: https://github.com/fiale-plus/cc-meta-skills
 ```
 
-### Option 2: Manual Clone
+### Option 3: Manual Clone
 
 ```bash
 git clone https://github.com/fiale-plus/cc-meta-skills ~/.claude/plugins/discover-project-skills
 ```
+
+After installation, restart Claude Code or reload plugins.
 
 ## Usage
 
