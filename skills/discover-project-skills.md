@@ -174,3 +174,67 @@ Which areas should I analyze deeper?
 **Error handling:**
 - User selects invalid option → Re-prompt with valid options
 - No areas selected → Ask if they want to cancel
+
+## Phase 3: Deep Analysis
+
+**Goal**: Extract patterns, flows, and examples from selected areas.
+
+**For each selected area:**
+
+### Module/System Analysis
+
+1. **Identify entry points:**
+   - Controllers (REST), handlers (events), main packages
+   - Use Glob to find: `**/*Controller.ts`, `**/*Handler.java`, etc.
+
+2. **Find key abstractions:**
+   - Interfaces, base classes, common utilities
+   - Use Grep to search for: `interface`, `abstract class`, `extends`
+
+3. **Map directory structure:**
+   - Note naming conventions (PascalCase, camelCase, snake_case)
+   - Identify module boundaries
+
+4. **Detect dependencies:**
+   - Which modules depend on which (based on directory structure)
+
+### Flow Analysis
+
+**For synchronous flows (REST APIs):**
+1. Pick 2-3 representative endpoints
+2. Note the pattern: Controller → Service → Repository → Database
+3. Document error handling approach (try/catch, Result types, exceptions)
+4. Note validation patterns
+
+**For asynchronous flows (Events):**
+1. Find event producers (where events are published)
+2. Find event consumers (where events are processed)
+3. Document message structure
+4. Note retry/failure handling
+
+### Pattern Extraction
+
+Look for:
+- **Design patterns**: Repository pattern, Service layer, Factory, Strategy
+- **Architectural style**: Layered, hexagonal, event-driven, CQRS
+- **Testing approaches**: Unit tests, integration tests, test utilities
+- **Common utilities**: Logging, metrics, error handling helpers
+
+### Chain Detection (Directory-Based Proxy)
+
+**Build skill relationship graph based on directories:**
+
+If directories exist:
+- `/api` + `/service` + `/repository` → Chain: `api-patterns` → `service-layer-patterns` → `database-access-patterns`
+- `/api` + `/messaging` → Chain: `api-patterns` → `messaging-patterns`
+- `/events/producers` + `/events/consumers` → Chain: `event-producer-patterns` → `event-consumer-patterns`
+
+**Store findings for Phase 4:**
+- File paths with line numbers for examples
+- Pattern names and descriptions
+- Skill chain relationships
+
+**Error handling:**
+- Selected area has no patterns → Notify user, ask to skip or provide hints
+- File references invalid → Validate before including, skip if invalid
+- Analysis timeout → Fall back to shallow analysis, notify user
