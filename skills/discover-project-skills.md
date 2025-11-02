@@ -413,3 +413,35 @@ description: PostgreSQL database access patterns. Use when working with database
 - Skill exceeds 500 tokens after optimization → Warn user, ask to proceed or simplify
 - Cannot write skill file → Report error with path, suggest alternative location
 - Skill generation interrupted → Save progress so far, allow resume
+
+## Error Handling
+
+### Phase 0 Errors
+- **Cannot create .claude/skills/**: Suggest alternative location or check permissions
+- **Cannot read existing skills**: Warn user, offer to continue without checking
+
+### Phase 1 Errors
+- **No package files found**: Ask user to point to key files manually
+- **Cannot determine project size**: Default to Task/Explore agents (safer for large projects)
+- **File read errors**: Skip that file, continue with others
+- **No technologies detected**: Present findings anyway, ask user for hints
+
+### Phase 2 Errors
+- **User selects invalid option**: Re-prompt with valid options
+- **No areas selected**: Confirm if user wants to cancel
+
+### Phase 3 Errors
+- **Selected area has no patterns**: Notify user, ask to skip or provide hints
+- **File references invalid**: Validate before including, skip if invalid
+- **Deep analysis timeout**: Fall back to shallow analysis, notify user
+
+### Phase 4 Errors
+- **Skill exceeds 500 tokens after optimization**: Warn user, ask to proceed or simplify
+- **Cannot write skill file**: Report error with path, suggest alternative location
+- **Skill generation interrupted**: Save progress, allow resume
+
+### General Error Strategy
+- Never fail silently - always inform user
+- Provide actionable suggestions for resolution
+- Allow graceful degradation (partial results better than none)
+- Continue with other skills if one fails
