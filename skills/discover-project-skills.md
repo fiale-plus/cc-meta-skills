@@ -156,7 +156,7 @@ I found the following technologies and patterns:
 
 Which areas should I analyze deeper?
 ```
-
+15
 **Use AskUserQuestion tool with options:**
 - API Layer Patterns
 - Service Layer Patterns
@@ -335,7 +335,7 @@ This subsystem typically interacts with:
 
 ### Description Template Requirements
 
-Every description MUST include all four elements:
+Every description MUST include all five elements:
 1. **Technology/Pattern name**: "PostgreSQL database access patterns"
 2. **What it does**: "database queries and ORM usage"
 3. **Trigger keywords**: "database, SQL, queries, repository pattern"
