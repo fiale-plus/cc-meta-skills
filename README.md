@@ -48,32 +48,6 @@ Each skill includes:
 - Related skills for workflow chaining
 - Concrete examples from your code
 
-## 📦 Installation Options
-
-### Option 1: Claude Code CLI (Recommended)
-
-```bash
-claude plugin add https://github.com/fiale-plus/cc-meta-skills
-```
-
-### Option 2: Config File
-
-Add to your `.claude/config.yaml`:
-
-```yaml
-plugins:
-  - name: discover-project-skills
-    import_path: https://github.com/fiale-plus/cc-meta-skills
-```
-
-### Option 3: Manual Clone
-
-```bash
-git clone https://github.com/fiale-plus/cc-meta-skills ~/.claude/plugins/discover-project-skills
-```
-
-After installation, restart Claude Code or reload plugins.
-
 ## Usage
 
 ### Basic Usage
