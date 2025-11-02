@@ -6,6 +6,32 @@
 
 A Claude Code skill that analyzes codebases to automatically discover technologies, extract project-specific patterns, and generate contextual skills with intelligent chaining.
 
+## Table of Contents
+
+- [🚀 Quick Start](#-quick-start)
+  - [Recommended: Use with Superpowers](#recommended-use-with-superpowers)
+- [What It Does](#what-it-does)
+- [Usage](#usage)
+  - [Basic Usage](#basic-usage)
+  - [When to Run](#when-to-run)
+- [How It Works](#how-it-works)
+  - [Five-Phase Workflow](#five-phase-workflow)
+  - [Hybrid Discovery Mechanism](#hybrid-discovery-mechanism)
+  - [Supported Technologies](#supported-technologies)
+- [Examples](#examples)
+  - [Example 1: Simple Node.js API](#example-1-simple-nodejs-api)
+  - [Example 2: Event-Driven Microservice](#example-2-event-driven-microservice)
+- [Maintenance](#maintenance)
+  - [Updating Skills](#updating-skills)
+  - [Version Control](#version-control)
+- [Configuration](#configuration)
+  - [Token Budget](#token-budget)
+  - [Scanning Strategy](#scanning-strategy)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+- [Credits](#credits)
+
 ## 🚀 Quick Start
 
 ```bash
