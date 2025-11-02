@@ -14,13 +14,13 @@ claude plugin add https://github.com/fiale-plus/cc-meta-skills
 
 # Or add to your .claude/config.yaml
 plugins:
-  - name: meta-skills
+  - name: cc-meta-skills
     import_path: https://github.com/fiale-plus/cc-meta-skills
 ```
 
 Then run in any project:
 ```bash
-/meta-skills:discover-skills
+/cc-meta-skills:discover-skills
 ```
 
 ## What It Does
@@ -53,7 +53,7 @@ Each skill includes:
 ### Basic Usage
 
 ```bash
-/meta-skills:discover-skills
+/cc-meta-skills:discover-skills
 ```
 
 The skill will:

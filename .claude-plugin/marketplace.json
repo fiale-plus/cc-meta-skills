@@ -7,8 +7,8 @@
   },
   "plugins": [
     {
-      "name": "meta-skills",
-      "description": "Analyzes codebases to detect technologies, extract project-specific patterns, and generate reusable contextual skills with automatic chaining",
+      "name": "cc-meta-skills",
+      "description": "Meta-skills collection for Claude Code: analyzes codebases to detect technologies, extract project-specific patterns, and generate reusable contextual skills",
       "version": "1.0.0",
       "source": "./",
       "author": {
