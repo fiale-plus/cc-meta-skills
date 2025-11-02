@@ -1,5 +1,5 @@
 {
-  "name": "discover-project-skills",
+  "name": "meta-skills",
   "description": "Analyzes codebases to detect technologies, extract project-specific patterns, and generate reusable contextual skills with automatic chaining",
   "version": "1.0.0",
   "author": {
