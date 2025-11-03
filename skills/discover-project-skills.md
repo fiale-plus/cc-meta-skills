@@ -288,6 +288,7 @@ grep -rn "get(" src/ --include="*.kt"
 grep -rn "post(" src/ --include="*.kt"
 grep -rn "put(" src/ --include="*.kt"
 grep -rn "delete(" src/ --include="*.kt"
+grep -rn "patch(" src/ --include="*.kt"
 ```
 
 **Spring Boot:**
@@ -296,6 +297,7 @@ grep -rn "@GetMapping" src/ --include="*.java" --include="*.kt"
 grep -rn "@PostMapping" src/ --include="*.java" --include="*.kt"
 grep -rn "@PutMapping" src/ --include="*.java" --include="*.kt"
 grep -rn "@DeleteMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@PatchMapping" src/ --include="*.java" --include="*.kt"
 grep -rn "@RestController" src/ --include="*.java" --include="*.kt"
 ```
 
@@ -305,9 +307,19 @@ grep -rn "app.get(" src/ --include="*.ts" --include="*.js"
 grep -rn "router.post(" src/ --include="*.ts" --include="*.js"
 grep -rn "@Get(" src/ --include="*.ts"
 grep -rn "@Post(" src/ --include="*.ts"
+grep -rn "@Patch(" src/ --include="*.ts"
 ```
 
+**Error handling:**
+- **If no routes found**: Skip to next framework or ask user for routing file location
+- **If 100+ routes found**: Sample representative endpoints (e.g., one from each controller), group by module/feature
+
 **Step 2: Extract endpoint metadata**
+
+**Handler identification by framework:**
+- **Ktor**: Handler is the code block inside route definition (same file, inline)
+- **Spring Boot**: Handler is the method name with the mapping annotation
+- **Express/NestJS**: Handler is the decorated method or callback function
 
 For each route definition found:
 1. Extract HTTP method (GET, POST, PUT, DELETE, PATCH)
