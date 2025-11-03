@@ -271,6 +271,100 @@ Proceeding to Phase 3...
 3. Document message structure
 4. Note retry/failure handling
 
+### REST Endpoint Extraction (When "REST API Endpoints" Selected)
+
+**Goal:** Build comprehensive endpoint inventory for rest-endpoints.md skill.
+
+**Step 1: Detect route definition patterns**
+
+Based on detected framework, search for route definitions:
+
+**Ktor:**
+```bash
+# Find routing blocks
+grep -rn "routing {" src/ --include="*.kt"
+grep -rn "route(" src/ --include="*.kt"
+grep -rn "get(" src/ --include="*.kt"
+grep -rn "post(" src/ --include="*.kt"
+grep -rn "put(" src/ --include="*.kt"
+grep -rn "delete(" src/ --include="*.kt"
+```
+
+**Spring Boot:**
+```bash
+grep -rn "@GetMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@PostMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@PutMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@DeleteMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@RestController" src/ --include="*.java" --include="*.kt"
+```
+
+**Express/NestJS:**
+```bash
+grep -rn "app.get(" src/ --include="*.ts" --include="*.js"
+grep -rn "router.post(" src/ --include="*.ts" --include="*.js"
+grep -rn "@Get(" src/ --include="*.ts"
+grep -rn "@Post(" src/ --include="*.ts"
+```
+
+**Step 2: Extract endpoint metadata**
+
+For each route definition found:
+1. Extract HTTP method (GET, POST, PUT, DELETE, PATCH)
+2. Extract path pattern (e.g., `/api/v1/users/{id}`)
+3. Identify handler function/class
+4. Record file path and line number
+
+Example extraction:
+```
+File: src/api/routes/UserRoutes.kt:23
+Method: GET
+Path: /api/v1/users
+Handler: UserController.listUsers()
+
+File: src/api/routes/UserRoutes.kt:45
+Method: POST
+Path: /api/v1/users
+Handler: UserController.createUser()
+```
+
+**Step 3: Group endpoints by resource**
+
+Organize by path prefix:
+```
+User Management (/api/v1/users):
+- GET /api/v1/users → UserController.kt:23
+- GET /api/v1/users/{id} → UserController.kt:45
+- POST /api/v1/users → UserController.kt:67
+- PUT /api/v1/users/{id} → UserController.kt:89
+- DELETE /api/v1/users/{id} → UserController.kt:112
+
+Order Management (/api/v1/orders):
+- GET /api/v1/orders → OrderController.kt:18
+- POST /api/v1/orders → OrderController.kt:34
+```
+
+**Step 4: Detect path structure patterns**
+
+Analyze extracted paths:
+- Base path prefix (e.g., `/api/v1/`)
+- Versioning strategy (v1, v2 in path vs. header)
+- Resource naming (plural nouns: `/users`, `/orders`)
+- ID parameter patterns (`/{id}`, `/{uuid}`)
+- Nested resources (`/users/{id}/orders`)
+
+**Step 5: Store findings for Phase 4**
+
+```javascript
+rest_analysis = {
+  endpoints: grouped_endpoints,  // List of {method, path, handler, file:line}
+  path_patterns: detected_patterns,
+  base_path: base_path,
+  versioning: versioning_strategy,
+  file_references: unique_controller_files
+}
+```
+
 ### Pattern Extraction
 
 Look for:
