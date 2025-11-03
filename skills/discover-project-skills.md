@@ -257,6 +257,127 @@ Proceeding to Phase 3...
 4. **Detect dependencies:**
    - Which modules depend on which (based on directory structure)
 
+### Deep Tech Analysis (Framework & Language Patterns)
+
+**When user selects framework or language patterns** (e.g., "Ktor Framework", "Kotlin Language Patterns"), spawn focused Task agents.
+
+**Step 1: Determine tech-specific analysis needs**
+
+Map selection to analysis mandate:
+
+| Selection | Analysis Focus | Output Skills |
+|-----------|---------------|---------------|
+| Ktor Framework | Routing config, middleware, serialization, error handling, DI | ktor-routing-patterns, ktor-middleware-patterns |
+| Spring Boot | Controllers, services, repos, config, AOP, security | spring-boot-patterns, spring-security-patterns |
+| Kotlin Language | Coroutines, flows, sealed classes, extensions, delegation | kotlin-coroutines-patterns, kotlin-idioms |
+| Kafka Messaging | Producer configs, consumer groups, error/retry, serialization | kafka-producer-patterns, kafka-consumer-patterns |
+| Express Framework | Routing, middleware, error handling, async patterns | express-routing-patterns, express-middleware |
+
+**Step 2: Spawn Task agent with focused mandate**
+
+Example for Ktor Framework:
+
+```javascript
+Task agent prompt:
+"Extract Ktor framework patterns from this Kotlin codebase:
+
+**Routing Patterns:**
+- Route organization (file structure, grouping)
+- Route definitions (path parameters, query params)
+- Route nesting and modularization
+- Provide 3+ file examples with line numbers
+
+**Middleware Patterns:**
+- Authentication/authorization setup
+- Logging and monitoring middleware
+- CORS configuration
+- Custom middleware examples
+- Provide file references for each
+
+**Serialization Patterns:**
+- Content negotiation setup
+- JSON serialization config (kotlinx.serialization, Jackson, Gson)
+- Request/response body handling
+- Provide file examples
+
+**Error Handling:**
+- Status pages configuration
+- Exception handling approach
+- Error response format
+- Provide file examples
+
+**Dependency Injection:**
+- How dependencies are provided to routes
+- DI framework used (Koin, manual, etc.)
+- Provide setup file references
+
+For each pattern:
+1. Describe what it does (1-2 sentences)
+2. Provide file path with line number
+3. Note any gotchas or best practices
+
+Return findings as structured data for skill generation."
+
+Use Task tool with subagent_type: "Explore"
+Set thoroughness: "very thorough"
+```
+
+**Step 3: Process agent findings**
+
+Agent returns structured data:
+```javascript
+ktor_findings = {
+  routing_patterns: [
+    {
+      name: "Route grouping by feature",
+      description: "Routes organized by domain feature in separate files",
+      examples: [
+        "src/api/routes/UserRoutes.kt:12 - User management routes",
+        "src/api/routes/OrderRoutes.kt:8 - Order management routes"
+      ]
+    },
+    // ... more patterns
+  ],
+  middleware_patterns: [...],
+  serialization_patterns: [...],
+  error_handling_patterns: [...],
+  di_patterns: [...]
+}
+```
+
+**Step 4: Determine skill split strategy**
+
+Based on findings volume:
+
+```javascript
+if routing_patterns.length >= 3 AND middleware_patterns.length >= 3:
+  // Generate separate skills
+  skills_to_generate = ["ktor-routing-patterns", "ktor-middleware-patterns"]
+else if total_patterns <= 5:
+  // Consolidate into single skill
+  skills_to_generate = ["ktor-patterns"]
+else:
+  // Medium split
+  skills_to_generate = ["ktor-framework-patterns", "ktor-advanced-patterns"]
+```
+
+**Step 5: Store findings for Phase 4**
+
+```javascript
+tech_analysis = {
+  "ktor": ktor_findings,
+  "kotlin-coroutines": coroutines_findings,
+  // ... other tech analyses
+}
+
+// These will be used in Phase 4 for skill generation
+```
+
+**Error handling:**
+- Agent times out → Fall back to shallow analysis with Grep
+- Agent finds no patterns → Notify user, ask to skip or provide hints
+- Agent returns incomplete data → Use what's available, warn user
+
 ### Flow Analysis
 
 **For synchronous flows (REST APIs):**
