@@ -4,6 +4,10 @@
 SKILLS_DIR="${1:-.claude/skills}"
 OUTPUT_FILE="${2:-.claude/hooks/lib/skill-index.json}"
 
+# Create output directory if it doesn't exist
+OUTPUT_DIR="$(dirname "$OUTPUT_FILE")"
+mkdir -p "$OUTPUT_DIR"
+
 # Check if skills directory exists
 if [ ! -d "$SKILLS_DIR" ]; then
   echo "{}" > "$OUTPUT_FILE"
