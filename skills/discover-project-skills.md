@@ -141,39 +141,93 @@ API Protocols: REST, gRPC
 - File read errors → Skip that file, continue with others
 - No technologies detected → Present findings anyway, ask user for hints
 
-## Phase 2: Focus Selection
+## Phase 2: Focus Selection (MANDATORY)
 
 **Goal**: Let user choose which areas to analyze deeply.
 
-**Present findings from Phase 1 grouped by category:**
-```markdown
-I found the following technologies and patterns:
+**CRITICAL: This phase MUST NOT be skipped. Always call AskUserQuestion.**
 
-**API Layer**: REST endpoints in /controllers
-**Service Layer**: Business logic in /services
-**Database**: PostgreSQL access via /repositories
-**Messaging**: Kafka producers/consumers in /events
+**Step 1: Group findings from Phase 1**
 
-Which areas should I analyze deeper?
+Organize detected technologies into categories:
+- **API Protocols**: REST (if HTTP methods detected), gRPC (if proto files), GraphQL
+- **Messaging Systems**: Kafka, RabbitMQ, SQS (with producer/consumer distinction)
+- **Database Access**: PostgreSQL, MongoDB, Redis
+- **Framework Patterns**: Ktor, Spring Boot, NestJS, Express, FastAPI
+- **Language Patterns**: Kotlin (coroutines, flows), TypeScript (decorators), Python (async)
+- **Project Architecture**: Service layer, event processing, repository pattern
+
+**Step 2: Build multi-select question**
+
+Create AskUserQuestion with all detected areas:
+
+Example for Kotlin/Ktor/Kafka project:
+```json
+{
+  "question": "I detected the following technologies and patterns. Which areas should I analyze deeply for skill generation?",
+  "header": "Select Areas",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "REST API Endpoints",
+      "description": "Extract endpoint inventory, routing patterns, handlers (detected in src/api/)"
+    },
+    {
+      "label": "Ktor Framework Patterns",
+      "description": "Routing, middleware, serialization, error handling, dependency injection"
+    },
+    {
+      "label": "Kotlin Language Patterns",
+      "description": "Coroutines, flows, sealed classes, extension functions"
+    },
+    {
+      "label": "Kafka Messaging",
+      "description": "Producer/consumer patterns, error handling, retry logic (detected in src/messaging/)"
+    },
+    {
+      "label": "PostgreSQL Database",
+      "description": "Query patterns, transaction management, repository pattern (detected in src/repository/)"
+    },
+    {
+      "label": "Service Layer Architecture",
+      "description": "Business logic organization, service patterns (detected in src/services/)"
+    },
+    {
+      "label": "Testing Patterns",
+      "description": "Test structure, mocking, integration tests"
+    }
+  ]
+}
 ```
-15
-**Use AskUserQuestion tool with options:**
-- API Layer Patterns
-- Service Layer Patterns
-- Database Access Patterns
-- Messaging Patterns
-- Module Architecture
-- All (medium depth across all)
-- Other (let user specify)
 
-**Adaptive depth strategy:**
-- 1-2 areas selected → Deep dive with file examples and pattern extraction
-- "All" selected → Medium depth across all areas
-- Track selected areas to avoid duplicate work in Phase 3
+**Step 3: Validate user selection**
+
+```javascript
+if selections.length === 0:
+  Ask: "No areas selected. Do you want to cancel skill generation?"
+  if yes: Exit gracefully
+  if no: Re-prompt with options
+
+// Store selections for Phase 3
+selected_areas = selections
+depth_strategy = "deep" if selections.length <= 2 else "medium"
+```
+
+**Step 4: Report selection to user**
+
+```
+✓ Selected for deep analysis:
+- REST API Endpoints
+- Ktor Framework Patterns
+- Kafka Messaging
+
+Analysis depth: Deep (2-3 areas selected)
+Proceeding to Phase 3...
+```
 
 **Error handling:**
-- User selects invalid option → Re-prompt with valid options
-- No areas selected → Ask if they want to cancel
+- No technologies detected in Phase 1 → Ask user to provide hints or cancel
+- User selects all options → Set depth to "medium", warn about breadth vs. depth
 
 ## Phase 3: Deep Analysis
 
