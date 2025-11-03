@@ -318,8 +318,18 @@ For each pattern:
 
 Return findings as structured data for skill generation."
 
-Use Task tool with subagent_type: "Explore"
-Set thoroughness: "very thorough"
+**Invoke the Task tool:**
+
+```javascript
+Task({
+  subagent_type: "Explore",
+  description: "Extract Ktor framework patterns",
+  prompt: `[Insert the full prompt text from above, starting with "Extract Ktor framework patterns from this Kotlin codebase:"]`,
+  thoroughness: "very thorough"
+})
+```
+
+The Task agent will analyze the codebase and report back with findings.
 ```
 
 **Step 3: Process agent findings**
