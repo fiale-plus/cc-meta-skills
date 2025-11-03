@@ -53,7 +53,7 @@ For best results, use cc-meta-skills together with the [Superpowers plugin](http
 
 ```bash
 # Install superpowers for workflow structure
-claude plugin marketplace add superpowers-marketplace
+claude plugin marketplace add obra/superpowers-marketplace
 claude plugin install superpowers
 ```
 
