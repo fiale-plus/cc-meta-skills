@@ -7,6 +7,7 @@ node_modules/
 
 # Local testing and development
 .claude/
+.claude/hooks/lib/skill-index.json
 discover-project-skills-implementation-guide.md
 docs/plans/
 .worktrees/
