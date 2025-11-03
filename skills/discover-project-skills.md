@@ -159,6 +159,11 @@ Organize detected technologies into categories:
 
 **Step 2: Build multi-select question**
 
+**IMPORTANT**: AskUserQuestion supports 2-4 options per question. If more than 4 categories detected, either:
+- Group related categories (e.g., "Backend Technologies" combining Framework + Database)
+- Prioritize most important categories
+- Use multiple questions (not recommended for this use case)
+
 Create AskUserQuestion with all detected areas:
 
 Example for Kotlin/Ktor/Kafka project:
@@ -202,15 +207,15 @@ Example for Kotlin/Ktor/Kafka project:
 
 **Step 3: Validate user selection**
 
-```javascript
-if selections.length === 0:
+```
+IF selections is empty THEN:
   Ask: "No areas selected. Do you want to cancel skill generation?"
-  if yes: Exit gracefully
-  if no: Re-prompt with options
+  IF yes THEN: Exit gracefully
+  IF no THEN: Re-prompt with options
 
-// Store selections for Phase 3
-selected_areas = selections
-depth_strategy = "deep" if selections.length <= 2 else "medium"
+Store selections for Phase 3:
+  selected_areas = selections
+  depth_strategy = "deep" IF selection count <= 2, ELSE "medium"
 ```
 
 **Step 4: Report selection to user**
