@@ -141,39 +141,98 @@ API Protocols: REST, gRPC
 - File read errors → Skip that file, continue with others
 - No technologies detected → Present findings anyway, ask user for hints
 
-## Phase 2: Focus Selection
+## Phase 2: Focus Selection (MANDATORY)
 
 **Goal**: Let user choose which areas to analyze deeply.
 
-**Present findings from Phase 1 grouped by category:**
-```markdown
-I found the following technologies and patterns:
+**CRITICAL: This phase MUST NOT be skipped. Always call AskUserQuestion.**
 
-**API Layer**: REST endpoints in /controllers
-**Service Layer**: Business logic in /services
-**Database**: PostgreSQL access via /repositories
-**Messaging**: Kafka producers/consumers in /events
+**Step 1: Group findings from Phase 1**
 
-Which areas should I analyze deeper?
+Organize detected technologies into categories:
+- **API Protocols**: REST (if HTTP methods detected), gRPC (if proto files), GraphQL
+- **Messaging Systems**: Kafka, RabbitMQ, SQS (with producer/consumer distinction)
+- **Database Access**: PostgreSQL, MongoDB, Redis
+- **Framework Patterns**: Ktor, Spring Boot, NestJS, Express, FastAPI
+- **Language Patterns**: Kotlin (coroutines, flows), TypeScript (decorators), Python (async)
+- **Project Architecture**: Service layer, event processing, repository pattern
+
+**Step 2: Build multi-select question**
+
+**IMPORTANT**: AskUserQuestion supports 2-4 options per question. If more than 4 categories detected, either:
+- Group related categories (e.g., "Backend Technologies" combining Framework + Database)
+- Prioritize most important categories
+- Use multiple questions (not recommended for this use case)
+
+Create AskUserQuestion with all detected areas:
+
+Example for Kotlin/Ktor/Kafka project:
+```json
+{
+  "question": "I detected the following technologies and patterns. Which areas should I analyze deeply for skill generation?",
+  "header": "Select Areas",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "REST API Endpoints",
+      "description": "Extract endpoint inventory, routing patterns, handlers (detected in src/api/)"
+    },
+    {
+      "label": "Ktor Framework Patterns",
+      "description": "Routing, middleware, serialization, error handling, dependency injection"
+    },
+    {
+      "label": "Kotlin Language Patterns",
+      "description": "Coroutines, flows, sealed classes, extension functions"
+    },
+    {
+      "label": "Kafka Messaging",
+      "description": "Producer/consumer patterns, error handling, retry logic (detected in src/messaging/)"
+    },
+    {
+      "label": "PostgreSQL Database",
+      "description": "Query patterns, transaction management, repository pattern (detected in src/repository/)"
+    },
+    {
+      "label": "Service Layer Architecture",
+      "description": "Business logic organization, service patterns (detected in src/services/)"
+    },
+    {
+      "label": "Testing Patterns",
+      "description": "Test structure, mocking, integration tests"
+    }
+  ]
+}
 ```
-15
-**Use AskUserQuestion tool with options:**
-- API Layer Patterns
-- Service Layer Patterns
-- Database Access Patterns
-- Messaging Patterns
-- Module Architecture
-- All (medium depth across all)
-- Other (let user specify)
 
-**Adaptive depth strategy:**
-- 1-2 areas selected → Deep dive with file examples and pattern extraction
-- "All" selected → Medium depth across all areas
-- Track selected areas to avoid duplicate work in Phase 3
+**Step 3: Validate user selection**
+
+```
+IF selections is empty THEN:
+  Ask: "No areas selected. Do you want to cancel skill generation?"
+  IF yes THEN: Exit gracefully
+  IF no THEN: Re-prompt with options
+
+Store selections for Phase 3:
+  selected_areas = selections
+  depth_strategy = "deep" IF selection count <= 2, ELSE "medium"
+```
+
+**Step 4: Report selection to user**
+
+```
+✓ Selected for deep analysis:
+- REST API Endpoints
+- Ktor Framework Patterns
+- Kafka Messaging
+
+Analysis depth: Deep (2-3 areas selected)
+Proceeding to Phase 3...
+```
 
 **Error handling:**
-- User selects invalid option → Re-prompt with valid options
-- No areas selected → Ask if they want to cancel
+- No technologies detected in Phase 1 → Ask user to provide hints or cancel
+- User selects all options → Set depth to "medium", warn about breadth vs. depth
 
 ## Phase 3: Deep Analysis
 
@@ -198,6 +257,137 @@ Which areas should I analyze deeper?
 4. **Detect dependencies:**
    - Which modules depend on which (based on directory structure)
 
+### Deep Tech Analysis (Framework & Language Patterns)
+
+**When user selects framework or language patterns** (e.g., "Ktor Framework", "Kotlin Language Patterns"), spawn focused Task agents.
+
+**Step 1: Determine tech-specific analysis needs**
+
+Map selection to analysis mandate:
+
+| Selection | Analysis Focus | Output Skills |
+|-----------|---------------|---------------|
+| Ktor Framework | Routing config, middleware, serialization, error handling, DI | ktor-routing-patterns, ktor-middleware-patterns |
+| Spring Boot | Controllers, services, repos, config, AOP, security | spring-boot-patterns, spring-security-patterns |
+| Kotlin Language | Coroutines, flows, sealed classes, extensions, delegation | kotlin-coroutines-patterns, kotlin-idioms |
+| Kafka Messaging | Producer configs, consumer groups, error/retry, serialization | kafka-producer-patterns, kafka-consumer-patterns |
+| Express Framework | Routing, middleware, error handling, async patterns | express-routing-patterns, express-middleware |
+
+**Step 2: Spawn Task agent with focused mandate**
+
+Example for Ktor Framework:
+
+```javascript
+Task agent prompt:
+"Extract Ktor framework patterns from this Kotlin codebase:
+
+**Routing Patterns:**
+- Route organization (file structure, grouping)
+- Route definitions (path parameters, query params)
+- Route nesting and modularization
+- Provide 3+ file examples with line numbers
+
+**Middleware Patterns:**
+- Authentication/authorization setup
+- Logging and monitoring middleware
+- CORS configuration
+- Custom middleware examples
+- Provide file references for each
+
+**Serialization Patterns:**
+- Content negotiation setup
+- JSON serialization config (kotlinx.serialization, Jackson, Gson)
+- Request/response body handling
+- Provide file examples
+
+**Error Handling:**
+- Status pages configuration
+- Exception handling approach
+- Error response format
+- Provide file examples
+
+**Dependency Injection:**
+- How dependencies are provided to routes
+- DI framework used (Koin, manual, etc.)
+- Provide setup file references
+
+For each pattern:
+1. Describe what it does (1-2 sentences)
+2. Provide file path with line number
+3. Note any gotchas or best practices
+
+Return findings as structured data for skill generation."
+
+**Invoke the Task tool:**
+
+```javascript
+Task({
+  subagent_type: "Explore",
+  description: "Extract Ktor framework patterns",
+  prompt: `[Insert the full prompt text from above, starting with "Extract Ktor framework patterns from this Kotlin codebase:"]`,
+  thoroughness: "very thorough"
+})
+```
+
+The Task agent will analyze the codebase and report back with findings.
+```
+
+**Step 3: Process agent findings**
+
+Agent returns structured data:
+```javascript
+ktor_findings = {
+  routing_patterns: [
+    {
+      name: "Route grouping by feature",
+      description: "Routes organized by domain feature in separate files",
+      examples: [
+        "src/api/routes/UserRoutes.kt:12 - User management routes",
+        "src/api/routes/OrderRoutes.kt:8 - Order management routes"
+      ]
+    },
+    // ... more patterns
+  ],
+  middleware_patterns: [...],
+  serialization_patterns: [...],
+  error_handling_patterns: [...],
+  di_patterns: [...]
+}
+```
+
+**Step 4: Determine skill split strategy**
+
+Based on findings volume:
+
+```javascript
+if routing_patterns.length >= 3 AND middleware_patterns.length >= 3:
+  // Generate separate skills
+  skills_to_generate = ["ktor-routing-patterns", "ktor-middleware-patterns"]
+else if total_patterns <= 5:
+  // Consolidate into single skill
+  skills_to_generate = ["ktor-patterns"]
+else:
+  // Medium split
+  skills_to_generate = ["ktor-framework-patterns", "ktor-advanced-patterns"]
+```
+
+**Step 5: Store findings for Phase 4**
+
+```javascript
+tech_analysis = {
+  "ktor": ktor_findings,
+  "kotlin-coroutines": coroutines_findings,
+  // ... other tech analyses
+}
+
+// These will be used in Phase 4 for skill generation
+```
+
+**Error handling:**
+- Agent times out → Fall back to shallow analysis with Grep
+- Agent finds no patterns → Notify user, ask to skip or provide hints
+- Agent returns incomplete data → Use what's available, warn user
+
 ### Flow Analysis
 
 **For synchronous flows (REST APIs):**
@@ -211,6 +401,112 @@ Which areas should I analyze deeper?
 2. Find event consumers (where events are processed)
 3. Document message structure
 4. Note retry/failure handling
+
+### REST Endpoint Extraction (When "REST API Endpoints" Selected)
+
+**Goal:** Build comprehensive endpoint inventory for rest-endpoints.md skill.
+
+**Step 1: Detect route definition patterns**
+
+Based on detected framework, search for route definitions:
+
+**Ktor:**
+```bash
+# Find routing blocks
+grep -rn "routing {" src/ --include="*.kt"
+grep -rn "route(" src/ --include="*.kt"
+grep -rn "get(" src/ --include="*.kt"
+grep -rn "post(" src/ --include="*.kt"
+grep -rn "put(" src/ --include="*.kt"
+grep -rn "delete(" src/ --include="*.kt"
+grep -rn "patch(" src/ --include="*.kt"
+```
+
+**Spring Boot:**
+```bash
+grep -rn "@GetMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@PostMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@PutMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@DeleteMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@PatchMapping" src/ --include="*.java" --include="*.kt"
+grep -rn "@RestController" src/ --include="*.java" --include="*.kt"
+```
+
+**Express/NestJS:**
+```bash
+grep -rn "app.get(" src/ --include="*.ts" --include="*.js"
+grep -rn "router.post(" src/ --include="*.ts" --include="*.js"
+grep -rn "@Get(" src/ --include="*.ts"
+grep -rn "@Post(" src/ --include="*.ts"
+grep -rn "@Patch(" src/ --include="*.ts"
+```
+
+**Error handling:**
+- **If no routes found**: Skip to next framework or ask user for routing file location
+- **If 100+ routes found**: Sample representative endpoints (e.g., one from each controller), group by module/feature
+
+**Step 2: Extract endpoint metadata**
+
+**Handler identification by framework:**
+- **Ktor**: Handler is the code block inside route definition (same file, inline)
+- **Spring Boot**: Handler is the method name with the mapping annotation
+- **Express/NestJS**: Handler is the decorated method or callback function
+
+For each route definition found:
+1. Extract HTTP method (GET, POST, PUT, DELETE, PATCH)
+2. Extract path pattern (e.g., `/api/v1/users/{id}`)
+3. Identify handler function/class
+4. Record file path and line number
+
+Example extraction:
+```
+File: src/api/routes/UserRoutes.kt:23
+Method: GET
+Path: /api/v1/users
+Handler: UserController.listUsers()
+
+File: src/api/routes/UserRoutes.kt:45
+Method: POST
+Path: /api/v1/users
+Handler: UserController.createUser()
+```
+
+**Step 3: Group endpoints by resource**
+
+Organize by path prefix:
+```
+User Management (/api/v1/users):
+- GET /api/v1/users → UserController.kt:23
+- GET /api/v1/users/{id} → UserController.kt:45
+- POST /api/v1/users → UserController.kt:67
+- PUT /api/v1/users/{id} → UserController.kt:89
+- DELETE /api/v1/users/{id} → UserController.kt:112
+
+Order Management (/api/v1/orders):
+- GET /api/v1/orders → OrderController.kt:18
+- POST /api/v1/orders → OrderController.kt:34
+```
+
+**Step 4: Detect path structure patterns**
+
+Analyze extracted paths:
+- Base path prefix (e.g., `/api/v1/`)
+- Versioning strategy (v1, v2 in path vs. header)
+- Resource naming (plural nouns: `/users`, `/orders`)
+- ID parameter patterns (`/{id}`, `/{uuid}`)
+- Nested resources (`/users/{id}/orders`)
+
+**Step 5: Store findings for Phase 4**
+
+```javascript
+rest_analysis = {
+  endpoints: grouped_endpoints,  // List of {method, path, handler, file:line}
+  path_patterns: detected_patterns,
+  base_path: base_path,
+  versioning: versioning_strategy,
+  file_references: unique_controller_files
+}
+```
 
 ### Pattern Extraction
 
@@ -257,6 +553,11 @@ Examples: `api-layer-patterns.md`, `service-layer-patterns.md`, `event-processin
 
 ```markdown
 <!-- Generated by discover-project-skills on YYYY-MM-DD -->
+<!-- Invocation metadata:
+  paths: src/dir1/, src/dir2/
+  keywords: keyword1, keyword2, keyword3
+  tech: tech1, tech2
+-->
 ---
 name: <technology>-patterns
 description: <Technology> <what-it-does>. Use when <trigger-keywords>, especially in <file-patterns>, or <scenarios>.
@@ -291,6 +592,11 @@ When working with <technology>, also consider:
 
 ```markdown
 <!-- Generated by discover-project-skills on YYYY-MM-DD -->
+<!-- Invocation metadata:
+  paths: src/dir1/, src/dir2/
+  keywords: keyword1, keyword2, keyword3
+  tech: tech1, tech2
+-->
 ---
 name: <subsystem>-<aspect>
 description: <Subsystem> <aspect> <what-it-does>. Use when <trigger-keywords>, especially in <file-patterns>, or <scenarios>.
@@ -391,6 +697,140 @@ description: PostgreSQL database access patterns. Use when working with database
    - Read back the file to confirm
    - Log skill name for final summary
 
+### Metadata Generation Logic
+
+**For each skill being generated:**
+
+**Step 1: Extract path patterns**
+
+```javascript
+paths = []
+for file_ref in skill_findings.file_references:
+  // Extract directory pattern from file path
+  // src/api/routes/UserRoutes.kt → src/api/, src/api/routes/
+  dir = extract_directory(file_ref)
+  // IMPORTANT: Always include trailing slash to indicate directory pattern
+  // Example: src/api/routes/UserRoutes.kt → src/api/routes/
+  paths.add(dir)
+
+// Deduplicate and generalize
+paths = unique(paths)
+paths = generalize_patterns(paths)
+
+generalize_patterns(paths) {
+  // Generalize path patterns when multiple sibling directories detected
+  // Rules:
+  // 1. Keep specific if only one path: ["src/api/"] → ["src/api/"]
+  // 2. Generalize siblings: ["src/api/routes/", "src/api/controllers/"] → ["src/api/"]
+  // 3. Keep both if different parents: ["src/api/", "src/services/"] → both kept
+  // 4. Don't over-generalize to project root unless all paths share no common prefix
+
+  // Algorithm:
+  // - Group paths by parent directory
+  // - If 2+ paths share same parent, use parent instead
+  // - Return deduplicated list
+}
+```
+
+**Step 2: Build keyword list**
+
+```javascript
+keywords = []
+
+// Add technology name
+keywords.add(tech_name)  // "ktor", "kafka", "postgresql"
+
+// Add pattern types from findings
+for pattern in skill_findings.patterns:
+  keywords.add(pattern.type)  // "routing", "middleware", "consumer"
+
+// Add common terms from description
+keywords.add_all(extract_terms(description))
+
+extract_terms(description) {
+  // Extract meaningful technical terms from description
+  // 1. Split on spaces, punctuation
+  // 2. Lowercase all terms
+  // 3. Filter out stopwords: (the, a, an, when, use, with, for, working, especially)
+  // 4. Keep technical terms: HTTP, REST, API, SQL, etc.
+  // 5. Keep domain nouns: endpoint, route, consumer, query, database
+  // 6. Return unique list
+}
+
+// Add scenario keywords
+keywords.add_all(scenario_terms)  // "request handling", "serialization"
+
+keywords = unique(keywords)
+```
+
+**Step 3: Determine tech tags**
+
+```javascript
+tech_tags = []
+
+// Primary technology
+tech_tags.add(primary_tech)  // "ktor"
+
+// Related technologies detected
+if language:
+  tech_tags.add(language)  // "kotlin"
+
+if additional_tech:
+  tech_tags.add_all(additional_tech)  // ["kafka", "postgresql"]
+
+tech_tags = unique(tech_tags)
+```
+
+**Step 3.5: Validate metadata**
+
+Before formatting, validate that required data exists:
+
+```javascript
+// Validation checks
+if (paths.length === 0) {
+  paths = ["./"]  // Default to project root
+}
+
+if (keywords.length === 0) {
+  console.warn(`No keywords generated for skill ${skill_name}`)
+  keywords = [primary_tech]  // Fallback to tech name only
+}
+
+if (tech_tags.length === 0) {
+  throw new Error("Cannot generate metadata without tech tags")
+}
+```
+
+**Step 4: Format metadata comment**
+
+```javascript
+metadata_comment = `<!-- Invocation metadata:
+  paths: ${paths.join(", ")}
+  keywords: ${keywords.join(", ")}
+  tech: ${tech_tags.join(", ")}
+-->`
+```
+
+**Example for Ktor routing skill:**
+
+```markdown
+<!-- Invocation metadata:
+  paths: src/api/, src/routes/, src/api/routes/
+  keywords: ktor, routing, route, endpoint, HTTP, REST, path, handler
+  tech: ktor, kotlin
+-->
+```
+
+**Example for Kafka consumer skill:**
+
+```markdown
+<!-- Invocation metadata:
+  paths: src/messaging/kafka/, src/events/consumers/
+  keywords: kafka, consumer, event, message, consume, deserialize, retry
+  tech: kafka, kotlin
+-->
+```
+
 ### Example Skill Chains
 
 **Standard REST API → Database:**
@@ -407,6 +847,99 @@ description: PostgreSQL database access patterns. Use when working with database
 ## Related Skills
 - `service-layer-patterns` - For business logic before publishing
 - `kafka-consumer-patterns` - For understanding message consumers
+```
+
+### REST Endpoints Skill Template (Special Case)
+
+When REST endpoint extraction was performed in Phase 3, generate dedicated rest-endpoints.md skill:
+
+```markdown
+<!-- Generated by discover-project-skills on YYYY-MM-DD -->
+<!-- Invocation metadata:
+  paths: <api paths from extraction>
+  keywords: REST, API, endpoint, HTTP, route, <methods>
+  tech: <framework>
+-->
+---
+name: rest-endpoints
+description: REST API endpoint inventory for this project. Use when working with API endpoints, HTTP routes, REST controllers, especially in <api-paths>, or implementing new endpoints or modifying existing ones.
+---
+
+# REST API Endpoints
+
+## Endpoint Inventory
+
+### <Resource Group 1>
+
+- `<METHOD> <path>` → <handler-file>:<line>
+  - Description: [If available from comments/docs]
+- `<METHOD> <path>` → <handler-file>:<line>
+
+### <Resource Group 2>
+
+- `<METHOD> <path>` → <handler-file>:<line>
+- `<METHOD> <path>` → <handler-file>:<line>
+
+## Path Structure Patterns
+
+- **Base path**: `<base-path>`
+- **Versioning**: <strategy description>
+- **Resource naming**: <pattern description>
+- **ID parameters**: <pattern description>
+
+## Request/Response Patterns
+
+[Common patterns for request bodies, response formats, status codes]
+
+## Authentication
+
+[Authentication approach detected: JWT, OAuth, API keys, etc.]
+
+## Related Skills
+
+- `<framework>-routing-patterns` - For routing implementation details
+- `service-layer-patterns` - For business logic called by endpoints
+- `<database>-patterns` - For data access from endpoints
+
+## Key Files
+
+- `<main-routes-file>` - Route definitions
+- `<controller-dir>` - Handler implementations
+```
+
+### REST Endpoints Skill Generation Trigger
+
+In Phase 4, after generating other skills:
+
+```javascript
+if rest_analysis exists AND rest_analysis.endpoints.length > 0:
+  // Build endpoint inventory section
+  endpoint_inventory = group_by_resource(rest_analysis.endpoints)
+
+  // Build path patterns section
+  path_patterns = {
+    base_path: rest_analysis.base_path,
+    versioning: rest_analysis.versioning,
+    resource_naming: analyze_naming(rest_analysis.endpoints),
+    id_params: analyze_params(rest_analysis.endpoints)
+  }
+
+  // Generate skill
+  skill_content = fill_rest_endpoints_template(
+    endpoints: endpoint_inventory,
+    path_patterns: path_patterns,
+    file_references: rest_analysis.file_references
+  )
+
+  // Generate metadata
+  metadata = generate_metadata(
+    paths: extract_unique_dirs(rest_analysis.file_references),
+    keywords: ["REST", "API", "endpoint", "HTTP", "route", ...detected_methods],
+    tech: [framework_name]
+  )
+
+  // Write skill file
+  write_skill(".claude/skills/rest-endpoints.md", metadata + skill_content)
 ```
 
 **Error handling:**
