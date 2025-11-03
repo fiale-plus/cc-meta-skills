@@ -9,3 +9,4 @@ node_modules/
 .claude/
 discover-project-skills-implementation-guide.md
 docs/plans/
+.worktrees/
